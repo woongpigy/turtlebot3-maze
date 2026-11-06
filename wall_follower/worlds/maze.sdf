@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<!--
+  오른쪽 벽 따라가기 연습용 미로 (5x5칸, 한 칸 1.0 m)
+  S = 입구 (로봇 시작), E = 출구
+
+    +--+--+--+--+--+
+    |     |        |
+    +  +  +  +--+  +
+    |  |     |     |
+    +  +--+--+  +--+
+    |     |     |  |
+    +--+  +  +--+  +
+    |     |  |     |
+    +  +--+  +  +  +
+    S     |     |  E
+    +--+--+--+--+--+
+-->
+<sdf version="1.8">
+  <world name="default">
+    <physics type="ode">
+      <real_time_update_rate>1000.0</real_time_update_rate>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+    </physics>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="c"><geometry><plane><normal>0 0 1</normal><size>30 30</size></plane></geometry></collision>
+        <visual name="v"><geometry><plane><normal>0 0 1</normal><size>30 30</size></plane></geometry>
+          <material><ambient>0.8 0.8 0.8 1</ambient><diffuse>0.8 0.8 0.8 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <model name="maze">
+      <static>true</static>
+      <link name="wall_0">
+        <pose>0.00 2.50 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>5.10 0.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>5.10 0.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_1">
+        <pose>1.00 1.50 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>1.10 0.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>1.10 0.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_2">
+        <pose>-0.50 0.50 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>2.10 0.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>2.10 0.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_3">
+        <pose>2.00 0.50 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>1.10 0.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>1.10 0.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_4">
+        <pose>-2.00 -0.50 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>1.10 0.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>1.10 0.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_5">
+        <pose>1.00 -0.50 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>1.10 0.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>1.10 0.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_6">
+        <pose>-1.00 -1.50 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>1.10 0.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>1.10 0.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_7">
+        <pose>0.00 -2.50 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>5.10 0.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>5.10 0.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_8">
+        <pose>-2.50 0.50 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.10 4.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.10 4.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_9">
+        <pose>-1.50 1.00 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.10 1.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.10 1.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_10">
+        <pose>-0.50 2.00 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.10 1.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.10 1.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_11">
+        <pose>-0.50 -1.00 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.10 3.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.10 3.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_12">
+        <pose>0.50 1.00 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.10 1.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.10 1.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_13">
+        <pose>0.50 -1.00 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.10 1.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.10 1.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_14">
+        <pose>1.50 0.00 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.10 1.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.10 1.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_15">
+        <pose>1.50 -2.00 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.10 1.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.10 1.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+      <link name="wall_16">
+        <pose>2.50 0.50 0.2 0 0 0</pose>
+        <collision name="c"><geometry><box><size>0.10 4.10 0.4</size></box></geometry></collision>
+        <visual name="v"><geometry><box><size>0.10 4.10 0.4</size></box></geometry>
+          <material><ambient>0.6 0.6 0.65 1</ambient><diffuse>0.6 0.6 0.65 1</diffuse></material></visual>
+      </link>
+    </model>
+  </world>
+</sdf>

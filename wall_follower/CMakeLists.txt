@@ -15,7 +15,7 @@ ament_target_dependencies(wall_follower rclcpp sensor_msgs geometry_msgs)
 
 install(TARGETS wall_follower
   DESTINATION lib/${PROJECT_NAME})
-install(DIRECTORY launch
+install(DIRECTORY launch worlds
   DESTINATION share/${PROJECT_NAME})
 
 ament_package()
