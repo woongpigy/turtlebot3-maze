@@ -15,7 +15,7 @@
 
 ```bash
 mkdir -p ~/maze_ws/src && cd ~/maze_ws/src
-git clone <이 저장소 주소>
+git clone https://github.com/woongpigy/turtlebot3-maze.git
 cd ~/maze_ws
 source /opt/ros/jazzy/setup.bash
 colcon build
