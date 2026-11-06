@@ -25,7 +25,9 @@ double sector_min(const sensor_msgs::msg::LaserScan & scan, double start_deg, do
   double angle = scan.angle_min;
   for (const float dist : scan.ranges) {
     const double wrapped = wrap_pi(angle);
-    if (start <= wrapped && wrapped <= end && std::isfinite(dist)) {
+    // 실제 라이다는 측정 실패를 0 으로 보내므로 유효 범위만 쓴다.
+    const bool valid = dist >= scan.range_min && dist <= scan.range_max;
+    if (start <= wrapped && wrapped <= end && valid) {
       best = std::min(best, static_cast<double>(dist));
     }
     angle += scan.angle_increment;
@@ -78,8 +80,8 @@ private:
       // 오른쪽 벽이 가까우면 왼쪽으로 벌린다.
       send(0.1, 0.2);
     } else {
-      // 0.5~0.7 m 이면 직진. 미로에서 빠르면 0.5 를 낮춘다.
-      send(0.5, 0.0);
+      // 0.5~0.7 m 이면 직진. 버거 최고 속도는 약 0.22 m/s.
+      send(0.2, 0.0);
     }
   }
 
@@ -94,8 +96,15 @@ int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
   auto node = std::make_shared<WallFollower>();
+  // Ctrl+C 면 spin 이 끝날 때 이미 ROS 가 꺼져 있어 publish 가 버려진다.
+  // 종료 직전 콜백에서 정지 명령을 보내야 로봇이 멈춘다.
+  rclcpp::contexts::get_global_default_context()->add_pre_shutdown_callback(
+    [weak = std::weak_ptr<WallFollower>(node)]() {
+      if (auto n = weak.lock()) {
+        n->stop();
+      }
+    });
   rclcpp::spin(node);
-  node->stop();
   rclcpp::shutdown();
   return 0;
 }
